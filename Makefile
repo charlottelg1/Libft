@@ -3,14 +3,21 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: root <root@student.42.fr>                  +#+  +:+       +#+         #
+#    By: cle-gran <cle-gran@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/08 20:10:08 by root              #+#    #+#              #
-#    Updated: 2021/05/15 15:16:33 by root             ###   ########.fr        #
+#    Updated: 2022/03/20 19:21:20 by cle-gran         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
+
+CC = clang
+CFLAGS = -Wall -Wextra -Werror
+RM = rm
+
+INCLUDES = srcs/libft.h
+
 SRCS = ft_memset.c \
 	   ft_bzero.c \
 	   ft_memccpy.c \
@@ -45,42 +52,35 @@ SRCS = ft_memset.c \
 	   ft_strdup.c \
 	   ft_strnstr.c \
 	   ft_strrchr.c \
+	   ft_lstnew.c \
+	   ft_lstadd_front.c \
+	   ft_lstsize.c \
+	   ft_lstlast.c \
+	   ft_lstadd_back.c \
+	   ft_lstdelone.c \
+	   ft_lstclear.c \
+	   ft_lstiter.c \
+	   ft_lstmap.c
 
-BONUS = ft_lstnew.c \
-		ft_lstadd_front.c \
-		ft_lstsize.c \
-		ft_lstlast.c \
-		ft_lstadd_back.c \
-		ft_lstdelone.c \
-		ft_lstclear.c \
-		ft_lstiter.c \
-		ft_lstmap.c
+OBJS_DIR = objs/
 
-OBJS = ${SRCS:.c=.o}
+OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 
-OBJSBONUS = ${BONUS:.c=.o}
+$(OBJS_DIR)%.o: srcs/%.c
+	mkdir -p $(OBJS_DIR)
+	${CC} -c ${CFLAGS} -o $@ $< -I ${INCLUDES}
 
-HEADER = includes
-
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror
-RM = rm -f
+all: $(NAME)
 
 $(NAME): $(OBJS)
 	ar rcs ${NAME} ${OBJS}
 
-bonus: ${OBJS} ${OBJSBONUS}
-	ar rcs ${NAME} ${OBJS} ${OBJSBONUS}
-
-all: $(NAME)
-
-%.o: %.c
-	${CC} -c ${CFLAGS} -o $@ $< -I ${HEADER}
-
 clean:
-	${RM} ${OBJS} ${OBJSBONUS}
+	$(RM) -rf $(OBJS_DIR)
 
 fclean: clean
-	${RM} $(NAME)
+	$(RM) -f $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re
